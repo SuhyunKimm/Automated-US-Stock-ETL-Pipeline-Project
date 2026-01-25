@@ -27,9 +27,9 @@ create table raw.raw_us_stocks (
 );
 print 'Table ''raw_us_stocks'' has been created.';
 
-drop table if exists raw.stg_us_stocks;
+drop table if exists clean.stg_us_stocks;
 
-create table raw.stg_us_stocks (
+create table clean.stg_us_stocks (
 	Ticker nvarchar(10) not null,
 	Date datetime2(3) not null,
 	[Open] decimal(20,6),
@@ -41,5 +41,5 @@ create table raw.stg_us_stocks (
 );
 print 'Table ''stg_us_stocks'' has been created.';
 
-ALTER TABLE raw.stg_us_stocks 
+ALTER TABLE clean.stg_us_stocks 
 ADD CONSTRAINT PK_stg_us_stocks PRIMARY KEY (Ticker, Date);

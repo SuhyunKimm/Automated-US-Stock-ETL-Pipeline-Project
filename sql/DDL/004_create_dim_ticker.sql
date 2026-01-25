@@ -14,7 +14,7 @@ use USStocks;
 
 CREATE TABLE analytics.dim_ticker (
     tickerId INT IDENTITY PRIMARY KEY,
-    ticker NVARCHAR(10),
+    ticker NVARCHAR(10) NOT NULL UNIQUE,
     company_name NVARCHAR(100) NULL,
     sector NVARCHAR(50) NULL,
     industry NVARCHAR(50) NULL,

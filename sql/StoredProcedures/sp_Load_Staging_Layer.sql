@@ -1,6 +1,6 @@
 /*
 ================================================================================
-Procedure: sp_Load_Staging_Layer
+Procedure: analytics.sp_Load_Staging_Layer
 Purpose  : Load and upsert cleaned stock price data from the raw layer into the
            staging (silver) layer.
            - Cast raw NVARCHAR fields into proper data types
@@ -19,7 +19,7 @@ use USStocks;
 
 -- Silver Layer : Staging
 
-create or alter procedure sp_Load_Staging_Layer
+create or alter procedure analytics.sp_Load_Staging_Layer
 AS
 begin
 	set nocount on;
