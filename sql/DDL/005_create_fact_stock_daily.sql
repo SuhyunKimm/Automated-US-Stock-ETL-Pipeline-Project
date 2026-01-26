@@ -7,10 +7,18 @@ Created: 2026-01-24
 Notes  : 
 ================================================================================
 */
+use USStocks;
 
+if not exists (
+	select * from INFORMATION_SCHEMA.TABLES 
+	where
+		TABLE_SCHEMA = 'analytics'
+		and TABLE_NAME = 'fact_stock_daily'
+)
+begin
 CREATE TABLE analytics.fact_stock_daily (
-    date_key INT REFERENCES analytics.dim_date(date_key),
-    ticker_key INT REFERENCES analytics.dim_ticker(ticker_key),
+    DateKey INT NOT NULL REFERENCES analytics.dim_date(DateKey),
+    tickerId INT NOT NULL REFERENCES analytics.dim_ticker(tickerId),
     open_price FLOAT,
     high_price FLOAT,
     low_price FLOAT,
@@ -19,6 +27,13 @@ CREATE TABLE analytics.fact_stock_daily (
     daily_return FLOAT,
     cumulative_return FLOAT,
     volatility_20d FLOAT,
-    ingested_at DATETIME2(3) DEFAULT GETDATE(),
-    PRIMARY KEY (date_key, ticker_key)
+    updated_at DATETIME2(3) DEFAULT sysdatetime(),
+
+	CONSTRAINT PK_fact_stock_daily 
+		PRIMARY KEY (DateKey, tickerId),
+	CONSTRAINT FK_fact_stock_daily_DateKey 
+		FOREIGN KEY (DateKey) REFERENCES analytics.dim_date(DateKey),
+	CONSTRAINT FK_fact_stock_daily_tickerId 
+		FOREIGN KEY (tickerId) REFERENCES analytics.dim_ticker(tickerId)
 );
+end;

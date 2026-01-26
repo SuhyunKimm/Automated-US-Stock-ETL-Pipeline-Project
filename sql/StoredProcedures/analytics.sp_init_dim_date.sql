@@ -13,6 +13,7 @@ Notes    :
 */
 
 use USStocks;
+go
 
 create or alter proc analytics.sp_init_dim_date
 as

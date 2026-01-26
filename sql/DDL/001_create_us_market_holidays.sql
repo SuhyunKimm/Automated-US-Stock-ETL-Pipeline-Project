@@ -11,6 +11,23 @@ use USStocks;
 if not exists (
 	select * from INFORMATION_SCHEMA.TABLES 
 	where
+		TABLE_SCHEMA = 'clean'
+		and TABLE_NAME = 'us_market_holidays'
+)
+begin
+	create table clean.us_market_holidays (
+		[Date] date not null unique,
+		[Status] nvarchar(20),
+		Start_Time varchar(20) null,
+		End_Time varchar(20) null,
+		[Description] nvarchar(100),
+		ingested_at datetime2(3) default sysdatetime()
+	);
+end
+
+if not exists (
+	select * from INFORMATION_SCHEMA.TABLES 
+	where
 		TABLE_SCHEMA = 'analytics'
 		and TABLE_NAME = 'us_market_holidays'
 )
@@ -20,6 +37,7 @@ begin
 		[Status] nvarchar(20),
 		Start_Time varchar(20) null,
 		End_Time varchar(20) null,
-		[Description] nvarchar(100)
+		[Description] nvarchar(100),
+		ingested_at datetime2(3) default sysdatetime()
 	);
 end

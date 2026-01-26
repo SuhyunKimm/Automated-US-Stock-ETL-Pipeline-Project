@@ -13,7 +13,13 @@ Notes  :
 */
 
 use USStocks;
-
+if not exists (
+	select * from INFORMATION_SCHEMA.TABLES 
+	where
+		TABLE_SCHEMA = 'clean'
+		and TABLE_NAME = 'dim_ticker'
+)
+begin
 CREATE TABLE clean.dim_ticker (
     ticker NVARCHAR(10) NOT NULL UNIQUE,
     company_name NVARCHAR(100) NULL,
@@ -23,7 +29,15 @@ CREATE TABLE clean.dim_ticker (
     currency NVARCHAR(10) NULL,
 	ingested_at datetime2(3) DEFAULT sysdatetime()
 );
+end;
 
+if not exists (
+	select * from INFORMATION_SCHEMA.TABLES 
+	where
+		TABLE_SCHEMA = 'analytics'
+		and TABLE_NAME = 'dim_ticker'
+)
+begin
 CREATE TABLE analytics.dim_ticker (
     tickerId INT IDENTITY PRIMARY KEY,
     ticker NVARCHAR(10) NOT NULL UNIQUE,
@@ -34,3 +48,4 @@ CREATE TABLE analytics.dim_ticker (
     currency NVARCHAR(10) NULL,
 	updated_at datetime2(3)
 );
+end;

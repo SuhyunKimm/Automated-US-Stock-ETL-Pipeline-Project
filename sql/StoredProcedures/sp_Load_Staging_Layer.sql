@@ -16,7 +16,7 @@ Notes    :
 */
 
 use USStocks;
-
+go
 -- Silver Layer : Staging
 
 create or alter procedure analytics.sp_Load_Staging_Layer
@@ -39,10 +39,10 @@ begin
 					partition by Ticker, [Date]
 					order by ingested_at desc
 				) as rn
-			from raw_us_stocks
+			from raw.raw_us_stocks
 			where [Date] is not null
 		)
-		merge into stg_us_stocks As t
+		merge into clean.stg_us_stocks As t
 		using (
 			select
 				Ticker, [Date], [Open], [high], [low], [Close], volume, ingested_at
