@@ -4,11 +4,14 @@ Script: 002_create_dim_date.sql
 Purpose: Creates the 'dim_date' table which stores the date dimension.
 Author : Suhyun Kim
 Created: 2026-01-24
-Notes  : This table is static and used as a conformed dimension for fact tables.
+Notes  : 
+	- This table is intended to be static, but it may be updated with additional
+	dates when new data with more recent dates is inserted in the us_stock table.
 ================================================================================
 */
 
 use USStocks;
+
 if not exists (
 	select * from INFORMATION_SCHEMA.TABLES 
 	where
@@ -17,20 +20,23 @@ if not exists (
 )
 begin
 	CREATE TABLE analytics.dim_date (
-		DateKey INT PRIMARY KEY,
-		FullDate DATE NOT NULL,
-		DayOfMonth INT NOT NULL,
-		DayName VARCHAR(10) NOT NULL,
-		DayOfWeek INT NOT NULL,
-		DayOfWeekInMonth INT NOT NULL,
-		DayOfWeekInYear INT NOT NULL,
-		DayOfYear INT NOT NULL,
-		WeekOfYear INT NOT NULL,
-		MonthName VARCHAR(10) NOT NULL,
-		Month INT NOT NULL,
-		Quarter INT NOT NULL,
-		Year INT NOT NULL,
-		IsWeekend BIT NOT NULL,
-		IsHoliday BIT NOT NULL
+		dateKey int,
+		Fulldate date not null,
+		DayOfMonth int not null,
+		DayName varchar(10) not null,
+		DayOfWeek int not null,
+		DayOfWeekInMonth int not null,
+		DayOfWeekInYear int not null,
+		DayOfYear int not null,
+		WeekOfYear int not null,
+		MonthName varchar(10) not null,
+		Month int not null,
+		Quarter int not null,
+		Year int not null,
+		IsWeekend bit not null,
+		IsHoliday bit not null,
+
+		constraint PK_analytics_dim_date primary key (dateKey)
 	);
+	print 'A table ''analytics.dim_date'' is created.';
 end

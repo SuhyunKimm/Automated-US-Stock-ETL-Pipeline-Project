@@ -1,7 +1,8 @@
 /*
 ================================================================================
 Script: 000_create_schemas.sql
-Purpose: Create database 'USStocks' and schemas 'raw', 'clean', and 'analytics' for the Bronze, Silver, and Gold layers, respectively.
+Purpose:¡¡Create database 'USStocks' and schemas 'raw', 'clean', and 'analytics' 
+		¡¡for the Bronze, Silver, and Gold layers, respectively.
 Author : Suhyun Kim
 Created: 2026-01-24
 Notes  : Schemas are currently owned by 'dbo'.
@@ -13,6 +14,7 @@ Notes  : Schemas are currently owned by 'dbo'.
 if not exists (select * from sys.databases where name = 'USStocks')
 begin
 	create database USStocks;
+	print 'A database ''USStocks'' is created.';
 end
 go
 
@@ -22,15 +24,24 @@ go
 
 -- Bronze Layer
 if not exists (select * from sys.schemas where name = 'raw')
+begin
 	exec('create schema raw authorization dbo;');
+	print 'A schema ''raw'' is created.';
+end
 go
 
 -- Silver Layer
 if not exists (select * from sys.schemas where name = 'clean')
+begin
 	exec('create schema clean authorization dbo;');
+	print 'A schema ''clean'' is created.';
+end
 go
 
 -- Gold Layer
 if not exists (select * from sys.schemas where name = 'analytics')
+begin
 	exec('create schema analytics authorization dbo;');
+	print 'A schema ''analytics'' is created.';
+end
 go

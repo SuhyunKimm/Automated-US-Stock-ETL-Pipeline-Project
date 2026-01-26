@@ -7,7 +7,7 @@ Purpose  : Load and upsert cleaned ticker data from the clean layer into the
 Author   : Suhyun Kim
 Created  : 2026-01-26
 Notes    :
-  - 
+  - This procedure upserts clean.dim_ticker into analytics.dim_ticker (gold layer).
 ================================================================================
 */
 
@@ -16,7 +16,7 @@ go
 -- Silver Layer : Staging
 
 create or alter procedure analytics.sp_Upsert_dim_ticker
-AS
+as
 begin
 	set nocount on;
 
@@ -43,4 +43,6 @@ begin
 			s.currency,
 			sysdatetime()
 		);
+	
+	print 'Table ''analytics.dim_ticker'' is updated.';
 end;

@@ -1,6 +1,6 @@
 /*
 ================================================================================
-Procedure: analytics.sp_extend_dim_date
+Procedure: analytics.sp_Extend_dim_date
 Purpose  : Extends the dim_date table to ensure it always contains
            date records up to 5 years beyond the current date.
 Author   : Suhyun Kim
@@ -15,23 +15,24 @@ Notes    :
 */
 
 use USStocks;
+go
 
-create or alter proc analytics.sp_extend_dim_date
+create or alter proc analytics.sp_Extend_dim_date
 as
 begin
 	set nocount on;
 
 	-- Declare start and end dates for the dimension
-	declare @maxDimDate DATE;
-	declare @targetEndDate DATE;
-	declare @currentDate DATE;
+	declare @maxDimDate date;
+	declare @targetEndDate date;
+	declare @currentDate date;
 
 	select 
 		@maxDimDate = max(FullDate) 
 	from analytics.dim_date;
 
 	set 
-		@currentDate = cast(GETDATE() as DATE);
+		@currentDate = cast(getdate() as date);
 	set
 		@targetEndDate = dateadd(year, 5, @currentDate);
 	
@@ -42,17 +43,15 @@ begin
 
 	if @maxDimDate < @targetEndDate
 	begin
-		
-		-- A Common Table Expression (CTE) to generate a sequence of dates
-		;WITH DateSequence(Date) AS (
-			SELECT dateadd(day, 1, @maxDimDate) AS Date
-			UNION ALL
-			SELECT DATEADD(DAY, 1, Date)
+		with DateSequence([Date]) AS (
+			select dateadd(day, 1, @maxDimDate) AS [date]
+			union all
+			select dateadd(day, 1, [date])
 			FROM DateSequence
-			WHERE Date <= @targetEndDate
+			WHERE [date] <= @targetEndDate
 		)
-		-- Insert data into the DimDate table from the DateSequence
-		INSERT INTO analytics.dim_date (
+
+		insert into analytics.dim_date (
 			DateKey,
 			FullDate,
 			DayOfMonth,
@@ -69,28 +68,28 @@ begin
 			IsWeekend,
 			IsHoliday
 		)
-		SELECT
-			CONVERT(INT, CONVERT(CHAR(8), Date, 112)) AS DateKey,
-			Date AS FullDate,
-			DAY(Date) AS DayOfMonth,
-			DATENAME(WEEKDAY, Date) AS DayName,
-			DATEPART(WEEKDAY, Date) AS DayOfWeek,
-			(DAY(Date)-1) / 7 + 1 AS DayOfWeekInMonth, 
-			DATEPART(WEEKDAY, Date) AS DayOfWeekInYear,
-			DATEPART(DAYOFYEAR, Date) AS DayOfYear,
-			DATEPART(WEEK, Date) AS WeekOfYear,
-			DATENAME(MONTH, Date) AS MonthName,
-			MONTH(Date) AS Month,
-			DATEPART(QUARTER, Date) AS Quarter,
-			YEAR(Date) AS Year,
-			CASE
-				WHEN DATEPART(WEEKDAY, Date) IN (1, 7) THEN 1
-				ELSE 0
-			END AS IsWeekend,
-			IsHoliday = 0
-		FROM
+		select
+		convert(int, convert(char(8), [Date], 112)) AS DateKey,
+		[Date] AS FullDate,
+		day([Date]) AS DayOfMonth,
+		datename(weekday, [Date]) AS DayName,
+		datepart(weekday, [Date]) AS DayOfWeek,
+		(DAY(Date)-1) / 7 + 1 AS DayOfWeekInMonth, 
+		datepart(weekday, [Date]) AS DayOfWeekInYear,
+		datepart(dayofyear, [Date]) AS DayOfYear,
+		datepart(week, [Date]) AS WeekOfYear,
+		datename(month, [Date]) AS MonthName,
+		month([Date]) AS Month,
+		datepart(quarter, [Date]) AS Quarter,
+		year([Date]) AS Year,
+		case 
+			when datename(weekday, [Date]) in ('Saturday','Sunday') then 1 
+			else 0 
+		end as IsWeekend,
+		IsHoliday = 0
+		from
 			DateSequence
-		OPTION (MAXRECURSION 0); 
+		option (maxrecursion 0); 
 
 		update d
 		set IsHoliday = 1
@@ -99,6 +98,6 @@ begin
 		on d.FullDate = h.[Date]
 		where d.FullDate > @maxDimDate;
 		
-		print 'dim_date table extended to ' + @targetEndDate;
+		print 'Table ''analytics.dim_date'' is extended to ' + convert(varchar(10), @targetEndDate, 120);
 	end;
 end;
