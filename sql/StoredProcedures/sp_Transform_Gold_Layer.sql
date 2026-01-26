@@ -1,4 +1,4 @@
-/* NEED TO CHANGE
+/*
 ================================================================================
 Procedure: sp_Transform_Gold_Layer
 Purpose  : Load and upsert cleaned stock price data from the raw layer into the
