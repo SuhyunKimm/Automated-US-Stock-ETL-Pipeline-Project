@@ -29,9 +29,9 @@ begin
 		low_price decimal(20,6) not null,
 		close_price decimal(20,6) not null,
 		volume bigint not null,
-		daily_return decimal(20,6) not null,
-		cumulative_return decimal(20,6) not null,
-		volatility_20d decimal(20,6) not null,
+		daily_return decimal(20,6),
+		cumulative_return decimal(20,6),
+		volatility_20d decimal(20,6),
 		updated_at datetime2(3) not null default sysdatetime(),
 
 		constraint PK_fact_stock_daily 
