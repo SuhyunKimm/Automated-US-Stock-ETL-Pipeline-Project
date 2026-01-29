@@ -15,7 +15,7 @@ Notes    :
 use USStocks;
 go
 
-create or alter procedure sp_Transform_us_stocks_fact
+create or alter procedure analytics.sp_Transform_us_stocks_fact
 as
 begin
 	set nocount on;
