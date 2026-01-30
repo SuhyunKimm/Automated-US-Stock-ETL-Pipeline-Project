@@ -1,1 +1,1 @@
-# Automated-US-Stock-ETL-Pipeline-Project
+# Automated US Stock ETL Pipeline Project
