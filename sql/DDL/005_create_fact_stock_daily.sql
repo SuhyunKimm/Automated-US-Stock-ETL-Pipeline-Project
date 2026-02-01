@@ -21,23 +21,23 @@ if not exists (
 		and TABLE_NAME = 'fact_stock_daily'
 )
 begin
-	CREATE TABLE analytics.fact_stock_daily (
+	create table analytics.fact_stock_daily (
 		dateKey int not null,
 		tickerId int not null,
-		open_price decimal(20,6) not null,
-		high_price decimal(20,6) not null,
-		low_price decimal(20,6) not null,
-		close_price decimal(20,6) not null,
+		openPrice decimal(20,6) not null,
+		highPrice decimal(20,6) not null,
+		lowPrice decimal(20,6) not null,
+		closePrice decimal(20,6) not null,
 		volume bigint not null,
-		daily_return decimal(20,6),
-		cumulative_return decimal(20,6),
-		volatility_20d decimal(20,6),
-		updated_at datetime2(3) not null default sysdatetime(),
+		dailyReturn decimal(20,6),
+		cumulativeReturn decimal(20,6),
+		volatility20d decimal(20,6),
+		updatedAt datetime2(3) not null default sysdatetime(),
 
 		constraint PK_fact_stock_daily 
-			primary key (DateKey, tickerId),
+			primary key (dateKey, tickerId),
 		constraint FK_fact_stock_daily_DateKey 
-			foreign key (DateKey) references analytics.dim_date(DateKey),
+			foreign key (dateKey) references analytics.dim_date(dateKey),
 		constraint FK_fact_stock_daily_tickerId 
 			foreign key (tickerId) references analytics.dim_ticker(tickerId)
 	);

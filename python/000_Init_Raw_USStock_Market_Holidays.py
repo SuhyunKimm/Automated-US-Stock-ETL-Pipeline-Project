@@ -15,9 +15,10 @@ df.rename(columns = {
     "end_time" : "End_Time",
     "holiday_name" : "Description"},
     inplace = True)
-
+print(df.head(50))
 df['Date'] = pd.to_datetime(df['Date'])
 
+"""
 df['Start_Time'] = df['Start_Time'].replace(np.nan, None)
 df['End_Time'] = df['End_Time'].replace(np.nan, None)
 
@@ -95,4 +96,4 @@ except Exception as e :
 
 finally:
     cursor.close()
-    conn.close()
+    conn.close()"""

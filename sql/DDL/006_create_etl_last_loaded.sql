@@ -27,8 +27,8 @@ if not exists (
 begin
 	create table analytics.etl_last_loaded (
 		tableName varchar(50),
-		last_loaded_date date,
-		updated_at datetime2(3) not null default sysdatetime(),
+		lastLoadedDate date,
+		updatedAt datetime2(3) not null default sysdatetime(),
 
 		constraint PK_etl_last_loaded primary key (tableName)
 	);

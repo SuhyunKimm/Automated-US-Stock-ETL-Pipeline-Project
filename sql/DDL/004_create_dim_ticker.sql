@@ -25,12 +25,12 @@ if not exists (
 begin
 	CREATE TABLE clean.dim_ticker (
 		ticker nvarchar(10) not null unique,
-		company_name nvarchar(100) null,
+		companyName nvarchar(100) null,
 		country nvarchar(50) null,
 		industry nvarchar(50) null,
 		market nvarchar(50) null,
 		currency nvarchar(10) null,
-		ingested_at datetime2(3) default sysdatetime()
+		ingestedAt datetime2(3) default sysdatetime()
 	);
 	print 'A table ''clean.dim_ticker'' is created.';
 end
@@ -45,12 +45,12 @@ begin
 	CREATE TABLE analytics.dim_ticker (
 		tickerId int identity(1,1),
 		ticker nvarchar(10) not null unique,
-		company_name nvarchar(100) null,
+		companyName nvarchar(100) null,
 		country nvarchar(50) null,
 		industry nvarchar(50) null,
 		market nvarchar(50) null,
 		currency nvarchar(10) null,
-		updated_at datetime2(3) not null default sysdatetime(),
+		updatedAt datetime2(3) not null default sysdatetime(),
 
 		constraint PK_analytics_dim_ticker primary key (tickerId)
 	);

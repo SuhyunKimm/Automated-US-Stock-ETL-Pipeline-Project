@@ -19,22 +19,22 @@ if not exists (
 		and TABLE_NAME = 'dim_date'
 )
 begin
-	CREATE TABLE analytics.dim_date (
+	create table analytics.dim_date (
 		dateKey int,
-		Fulldate date not null,
-		DayOfMonth int not null,
-		DayName varchar(10) not null,
-		DayOfWeek int not null,
-		DayOfWeekInMonth int not null,
-		DayOfWeekInYear int not null,
-		DayOfYear int not null,
-		WeekOfYear int not null,
-		MonthName varchar(10) not null,
-		Month int not null,
-		Quarter int not null,
-		Year int not null,
-		IsWeekend bit not null,
-		IsHoliday bit not null,
+		fullDate date not null,
+		dayOfMonth int not null,
+		dayName varchar(10) not null,
+		dayOfWeek int not null,
+		dayOfWeekInMonth int not null,
+		dayOfWeekInYear int not null,
+		dayOfYear int not null,
+		weekOfYear int not null,
+		monthName varchar(10) not null,
+		monthNum int not null,
+		quarter int not null,
+		year int not null,
+		isWeekend bit not null,
+		isHoliday bit not null,
 
 		constraint PK_analytics_dim_date primary key (dateKey)
 	);

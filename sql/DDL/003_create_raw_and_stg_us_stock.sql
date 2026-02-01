@@ -23,14 +23,14 @@ if not exists (
 )
 begin
 	create table raw.us_stocks (
-		Ticker nvarchar(50),
-		[Date] nvarchar(50),
-		[Open] nvarchar(50),
-		[High] nvarchar(50),
-		[Low] nvarchar(50),
-		[Close] nvarchar(50),
-		Volume nvarchar(50),
-		ingested_at datetime2(3) default getdate()
+		ticker nvarchar(50), 
+		[date] nvarchar(50),
+		[open] nvarchar(50),
+		[high] nvarchar(50),
+		[low] nvarchar(50),
+		[close] nvarchar(50),
+		volume nvarchar(50),
+		ingestedAt datetime2(3) default getdate()
 	);
 	print 'A table ''raw.us_stocks'' is created.';
 end
@@ -43,16 +43,16 @@ if not exists (
 )
 begin
 	create table clean.us_stocks (
-		Ticker nvarchar(10) not null,
-		[Date] date not null,
-		[Open] decimal(20,6),
-		[High] decimal(20,6),
-		[Low] decimal(20,6),
-		[Close] decimal(20,6),
-		Volume bigint,
-		ingested_at datetime2(3) default getdate(),
+		ticker nvarchar(10) not null,
+		[date] date not null,
+		[open] decimal(20,6),
+		[high] decimal(20,6),
+		[low] decimal(20,6),
+		[close] decimal(20,6),
+		volume bigint,
+		ingestedAt datetime2(3) default getdate(),
 
-		constraint pk_clean_us_stocks primary key (Ticker, [Date])
+		constraint PK_clean_us_stocks primary key (ticker, [date])
 	);
 	print 'A table ''clean.us_stocks'' is created.';
 end
