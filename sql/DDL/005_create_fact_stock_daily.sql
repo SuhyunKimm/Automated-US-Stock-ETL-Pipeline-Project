@@ -32,6 +32,7 @@ begin
 		dailyReturn decimal(20,6),
 		cumulativeReturn decimal(20,6),
 		volatility20d decimal(20,6),
+		ingestedAt datetime2(3) not null default sysdatetime(),
 		updatedAt datetime2(3) not null default sysdatetime(),
 
 		constraint PK_fact_stock_daily 

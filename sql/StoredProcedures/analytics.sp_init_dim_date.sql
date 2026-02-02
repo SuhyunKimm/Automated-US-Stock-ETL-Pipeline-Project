@@ -29,7 +29,7 @@ begin
 	declare @StartDate date = '2021-01-01';
 	declare @EndDate date = '2030-12-31';
 
-	;with DateSequence([Date]) as (
+	;with DateSequence([date]) as (
 		select @StartDate as [date]
 		union all
 		select dateadd(day, 1, [date])
@@ -38,50 +38,50 @@ begin
 	)
 
 	insert into analytics.dim_date (
-		DateKey,
-		FullDate,
-		DayOfMonth,
-		DayName,
-		DayOfWeek,
-		DayOfWeekInMonth,
-		DayOfWeekInYear,
-		DayOfYear,
-		WeekOfYear,
-		MonthName,
-		Month,
-		Quarter,
-		Year,
-		IsWeekend,
-		IsHoliday
+		dateKey,
+		fullDate,
+		[dayOfMonth],
+		[dayName],
+		[dayOfWeek],
+		dayOfWeekInMonth,
+		dayOfWeekInYear,
+		[dayOfYear],
+		weekOfYear,
+		[monthName],
+		monthNum,
+		[quarter],
+		[year],
+		isWeekend,
+		isHoliday
 	)
 	select
-		convert(int, convert(char(8), [Date], 112)) AS DateKey,
-		[Date] AS FullDate,
-		day([Date]) AS DayOfMonth,
-		datename(weekday, [Date]) AS DayName,
-		datepart(weekday, [Date]) AS DayOfWeek,
-		(DAY(Date)-1) / 7 + 1 AS DayOfWeekInMonth, 
-		datepart(weekday, [Date]) AS DayOfWeekInYear,
-		datepart(dayofyear, [Date]) AS DayOfYear,
-		datepart(week, [Date]) AS WeekOfYear,
-		datename(month, [Date]) AS MonthName,
-		month([Date]) AS Month,
-		datepart(quarter, [Date]) AS Quarter,
-		year([Date]) AS Year,
+		convert(int, convert(char(8), [date], 112)) AS dateKey,
+		[date] AS fullDate,
+		day([date]) AS [dayOfMonth],
+		datename(weekday, [date]) AS [dayName],
+		datepart(weekday, [date]) AS [dayOfWeek],
+		(DAY(Date)-1) / 7 + 1 AS dayOfWeekInMonth, 
+		datepart(weekday, [date]) AS dayOfWeekInYear,
+		datepart(dayofyear, [date]) AS [dayOfYear],
+		datepart(week, [date]) AS weekOfYear,
+		datename(month, [date]) AS [monthName],
+		month([date]) AS monthNum,
+		datepart(quarter, [date]) AS [quarter],
+		year([date]) AS [year],
 		case 
-			when datename(weekday, [Date]) in ('Saturday','Sunday') then 1 
+			when datename(weekday, [date]) in ('Saturday','Sunday') then 1 
 			else 0 
-		end as IsWeekend,
-		IsHoliday = 0
+		end as isWeekend,
+		isHoliday = 0
 	from
 		DateSequence
 	option (maxrecursion 0); 
 
 	update d
-	set IsHoliday = 1
+	set isHoliday = 1
 	from analytics.dim_date d
 	inner join analytics.us_market_holidays h
-	on d.FullDate = h.[Date];
+	on d.fullDate = h.[date];
 
 	print 'Table ''analytics.dim_date'' is populated.';
 end;

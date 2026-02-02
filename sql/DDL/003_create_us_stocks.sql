@@ -30,7 +30,7 @@ begin
 		[low] nvarchar(50),
 		[close] nvarchar(50),
 		volume nvarchar(50),
-		ingestedAt datetime2(3) default getdate()
+		ingestedAt datetime2(3) default sysdatetime()
 	);
 	print 'A table ''raw.us_stocks'' is created.';
 end
@@ -50,7 +50,8 @@ begin
 		[low] decimal(20,6),
 		[close] decimal(20,6),
 		volume bigint,
-		ingestedAt datetime2(3) default getdate(),
+		ingestedAt datetime2(3) default sysdatetime(),
+		updatedAt datetime2(3) default sysdatetime(),
 
 		constraint PK_clean_us_stocks primary key (ticker, [date])
 	);

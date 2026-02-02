@@ -27,11 +27,11 @@ if not exists (
 )
 begin	   
 	create table raw.us_market_holidays (
-		[date] nvarchar(15) not null,
-		[status] nvarchar(20),
-		startTime varchar(20),
-		endTime varchar(20),
-		[description] nvarchar(100),
+		[date] nvarchar(50) not null,
+		[status] nvarchar(50),
+		startTime nvarchar(50),
+		endTime nvarchar(50),
+		[description] nvarchar(200),
 		ingestedAt datetime2(3) default sysdatetime()
 	);
 	print 'A table ''raw.us_market_holidays'' is created.';

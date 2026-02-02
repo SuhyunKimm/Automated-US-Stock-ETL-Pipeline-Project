@@ -20,24 +20,54 @@ begin
 	set nocount on;
 
 	merge analytics.us_market_holidays as t
-	using clean.us_market_holidays as s
-	on t.[Date] = s.[Date]
+	using (
+		select
+			[date],
+			[status],
+			[startTime],
+			[endTime],
+			[description],
+			isTradingDay = 
+				case
+					when [status] = 'closed' then 0
+				else 1
+			end,
+			isShortDay =
+				case
+					when [status] = 'short day' then 1
+				else 0
+			end
+		from clean.us_market_holidays
+	) as s
+	on t.[date] = s.[date]
 
-	when matched then
+	when matched and (
+		   (isnull(t.[status], '') <> isnull(s.[status], ''))
+		or (isnull(t.startTime, '') <> isnull(s.startTime, ''))
+		or (isnull(t.endTime, '') <> isnull(s.endTime, ''))
+		or (isnull(t.[description], '') <> isnull(s.[description], ''))
+		or (isnull(t.isTradingDay, '') <> isnull(s.isTradingDay, ''))
+		or (isnull(t.isShortDay, '') <> isnull(t.isShortDay, '')))
+	then
 		update set
-			t.[Status] = s.[Status],
-			t.Start_Time = s.Start_Time,
-			t.End_Time = s.End_Time,
-			t.[Description] = s.[Description],
-			t.ingested_at = sysdatetime()
+			t.[status] = s.[status],
+			t.startTime = s.startTime,
+			t.endTime = s.endTime,
+			t.[description] = s.[description],
+			t.isTradingDay = s.isTradingDay,
+			t.isShortDay = s.isShortDay,
+			t.lastUpdatedAt = sysdatetime()
 	when not matched then
-		insert ([Date], [Status], Start_Time, End_Time, [Description], ingested_at)
+		insert ([date], [status], startTime, endTime, [description], isTradingDay, isShortDay, ingestedAt, lastUpdatedAt)
 		values (
-			s.[Date],
-			s.[Status],
-			s.Start_Time,
-			s.End_Time,
-			s.[Description],
+			s.[date],
+			s.[status],
+			s.startTime,
+			s.endTime,
+			s.[description],
+			s.isTradingDay,
+			s.isShortDay,
+			sysdatetime(),
 			sysdatetime()
 		);
 

@@ -5,7 +5,7 @@ import pyodbc
 
 finnhub_client = finnhub.Client(api_key="")
 
-with open(r"C:\Automated-US-Stock-ETL-Pipeline-Project\logs\logs.txt", "a") as f:
+with open(r"../logs/logs.txt", "a", encoding="utf-8") as f:
     tickers = ["AMD", "NVDA", "AMZN", "PLTR", "TSLA", "AAPL"]
     profile = []
 
@@ -22,7 +22,6 @@ with open(r"C:\Automated-US-Stock-ETL-Pipeline-Project\logs\logs.txt", "a") as f
         'finnhubIndustry' : 'industry', 
         'exchange' : 'market'},
         inplace = True)
-    df
 
     conn = pyodbc.connect(
         "DRIVER={ODBC Driver 17 for SQL Server};"
@@ -34,10 +33,8 @@ with open(r"C:\Automated-US-Stock-ETL-Pipeline-Project\logs\logs.txt", "a") as f
     cursor = conn.cursor()
 
     try :
-        insert_query = "INSERT INTO clean.dim_ticker (ticker, company_name, country, industry, market, currency) VALUES (?, ?, ?, ?, ?, ?)"
-        
-        f.write("Loading US stock ticker data into SQL Server...")
-        
+
+        insert_query = "EXEC clean.sp_Load_dim_ticker @ticker=?, @companyName=?, @country=?, @industry=?, @market=?, @currency=?"        
         rows = list(df.itertuples(index=False, name=None))
         cursor.fast_executemany = True
         cursor.executemany(insert_query, rows)

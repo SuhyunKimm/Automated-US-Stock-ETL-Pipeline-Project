@@ -13,7 +13,6 @@ Notes    :
 
 use USStocks;
 go
--- Silver Layer : Staging
 
 create or alter procedure analytics.sp_Upsert_dim_ticker
 as
@@ -24,19 +23,25 @@ begin
 	using clean.dim_ticker as s
 	on t.ticker = s.ticker
 
-	when matched then
+	when matched and
+		((isnull(t.companyName, '') <> isnull(s.companyName, ''))
+		or (isnull(t.country, '') <> isnull(s.country, ''))
+		or (isnull(t.industry, '') <> isnull(s.industry, ''))
+		or (isnull(t.market, '') <> isnull(s.market, ''))
+		or (isnull(t.currency, '') <> isnull(s.currency, '')))
+	then
 		update set
-			t.company_name = s.company_name,
+			t.companyName = s.companyName,
 			t.country = s.country,
 			t.industry = s.industry,
 			t.market = s.market,
 			t.currency = s.currency,
-			t.updated_at = sysdatetime()
+			t.updatedAt = sysdatetime()
 	when not matched then
-		insert (ticker, company_name, country, industry, market, currency, updated_at)
+		insert (ticker, companyName, country, industry, market, currency, updatedAt)
 		values (
 			s.ticker,
-			s.company_name,
+			s.companyName,
 			s.country,
 			s.industry,
 			s.market,

@@ -1,7 +1,7 @@
 /*
 ================================================================================
-Procedure: analytics.sp_Extend_dim_date
-Purpose  : Extends the dim_date table to ensure it always contains
+Procedure: analytics.sp_Upsert_dim_date
+Purpose  : Update and insert the dim_date table to ensure it always contains
            date records up to 5 years beyond the current date.
 Author   : Suhyun Kim
 Created  : 2026-01-25
@@ -11,6 +11,8 @@ Notes    :
     in dim_date is less than (today + 5 years).
   - Intended to be executed as part of a regular ETL pipeline
     before fact data is loaded.
+  - This stored procedure also updates 'isHoliday' column values when 'analytics.
+	us_market_holidays' table is updated.
 ================================================================================
 */
 
@@ -28,7 +30,7 @@ begin
 	declare @currentDate date;
 
 	select 
-		@maxDimDate = max(FullDate) 
+		@maxDimDate = isnull(max(FullDate), '2021-01-01')
 	from analytics.dim_date;
 
 	set 
@@ -36,10 +38,6 @@ begin
 	set
 		@targetEndDate = dateadd(year, 5, @currentDate);
 	
-	if @maxDimDate is null
-	begin
-		throw 50002, 'dim_date is empty. Run sp_init_dim_date first.', 1;
-	end;
 
 	if @maxDimDate < @targetEndDate
 	begin
@@ -47,41 +45,41 @@ begin
 			select dateadd(day, 1, @maxDimDate) AS [date]
 			union all
 			select dateadd(day, 1, [date])
-			FROM DateSequence
-			WHERE [date] <= @targetEndDate
+			from DateSequence
+			where [date] <= @targetEndDate
 		)
 
 		insert into analytics.dim_date (
-			DateKey,
-			FullDate,
-			DayOfMonth,
-			DayName,
-			DayOfWeek,
-			DayOfWeekInMonth,
-			DayOfWeekInYear,
-			DayOfYear,
-			WeekOfYear,
-			MonthName,
-			Month,
-			Quarter,
-			Year,
-			IsWeekend,
-			IsHoliday
+			dateKey,
+			fullDate,
+			dayOfMonth,
+			dayName,
+			dayOfWeek,
+			dayOfWeekInMonth,
+			dayOfWeekInYear,
+			dayOfYear,
+			weekOfYear,
+			monthName,
+			monthNum,
+			quarter,
+			year,
+			isWeekend,
+			isHoliday
 		)
 		select
-		convert(int, convert(char(8), [Date], 112)) AS DateKey,
-		[Date] AS FullDate,
-		day([Date]) AS DayOfMonth,
-		datename(weekday, [Date]) AS DayName,
-		datepart(weekday, [Date]) AS DayOfWeek,
-		(DAY(Date)-1) / 7 + 1 AS DayOfWeekInMonth, 
-		datepart(weekday, [Date]) AS DayOfWeekInYear,
-		datepart(dayofyear, [Date]) AS DayOfYear,
-		datepart(week, [Date]) AS WeekOfYear,
-		datename(month, [Date]) AS MonthName,
-		month([Date]) AS Month,
-		datepart(quarter, [Date]) AS Quarter,
-		year([Date]) AS Year,
+		convert(int, convert(char(8), [Date], 112)) AS dateKey,
+		[date] AS fullDate,
+		day([Date]) AS [dayOfMonth],
+		datename(weekday, [Date]) AS [dayName],
+		datepart(weekday, [Date]) AS [dayOfWeek],
+		(DAY(Date)-1) / 7 + 1 AS dayOfWeekInMonth, 
+		datepart(weekday, [Date]) AS dayOfWeekInYear,
+		datepart(dayofyear, [Date]) AS [dayOfYear],
+		datepart(week, [Date]) AS weekOfYear,
+		datename(month, [Date]) AS [monthName],
+		month([Date]) AS monthNum,
+		datepart(quarter, [Date]) AS [quarter],
+		year([Date]) AS [year],
 		case 
 			when datename(weekday, [Date]) in ('Saturday','Sunday') then 1 
 			else 0 
@@ -90,14 +88,15 @@ begin
 		from
 			DateSequence
 		option (maxrecursion 0); 
-
-		update d
-		set IsHoliday = 1
-		from analytics.dim_date d
-		inner join analytics.us_market_holidays h
-		on d.FullDate = h.[Date]
-		where d.FullDate > @maxDimDate;
 		
 		print 'Table ''analytics.dim_date'' is extended to ' + convert(varchar(10), @targetEndDate, 120);
 	end;
+
+	update d
+	set isHoliday = 1
+	from analytics.dim_date d
+	inner join analytics.us_market_holidays h
+	on d.fullDate = h.[date]
+	where d.fullDate > @maxDimDate;
+
 end;

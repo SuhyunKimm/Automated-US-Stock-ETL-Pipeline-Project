@@ -1,6 +1,6 @@
 /*
 ================================================================================
-Procedure: analytics.sp_upsert_etl_last_loaded
+Procedure: analytics.sp_Upsert_etl_last_loaded
 Purpose  : 
 	Upserts the last successfully loaded date for a given table into 
 	analytics.etl_last_loaded.
@@ -13,28 +13,28 @@ Notes    :
 use USStocks;
 go
 
-create or alter procedure analytics.sp_upsert_etl_last_loaded
+create or alter procedure analytics.sp_Upsert_etl_last_loaded
 	@tableName varchar(50),
-	@last_loaded_date date
+	@lastLoadedDate date
 
 as
 begin
 	set nocount on;
 
 	begin try
-		if exists (select 1 from analytics.etl_last_loaded where tableName = @tableName and last_loaded_date <> @last_loaded_date)
+		if not exists (select 1 from analytics.etl_last_loaded where tableName = @tableName)
+		begin
+			insert into analytics.etl_last_loaded(tableName, lastLoadedDate, updatedAt)
+			values (@tableName, @lastLoadedDate, sysdatetime());
+		end
+		else if exists (select 1 from analytics.etl_last_loaded where tableName = @tableName and lastLoadedDate <> @lastLoadedDate)
 		begin
 			update analytics.etl_last_loaded
 			set 
-				last_loaded_date = @last_loaded_date,
-				updated_at = sysdatetime()
+				lastLoadedDate = @lastLoadedDate,
+				updatedAt = sysdatetime()
 			where 
 				tableName = @tableName
-		end
-		else if not exists (select 1 from analytics.etl_last_loaded where tableName = @tableName)
-		begin
-			insert into analytics.etl_last_loaded(tableName, last_loaded_date, updated_at)
-			values (@tableName, @last_loaded_date, sysdatetime());
 		end
 		else
 		begin

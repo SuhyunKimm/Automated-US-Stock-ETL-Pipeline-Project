@@ -5,7 +5,7 @@ def getLastLoadedDate (tableName) :
     
     result = -1
 
-    with open(r"C:\Automated-US-Stock-ETL-Pipeline-Project\logs\logs.txt", "a") as f:
+    with open(r"../logs/logs.txt", "a") as f:
         conn = pyodbc.connect(
             "DRIVER={ODBC Driver 17 for SQL Server};"
             "SERVER=;"
@@ -16,7 +16,7 @@ def getLastLoadedDate (tableName) :
         cursor = conn.cursor()
 
         try:
-            sql_query = 'SELECT last_loaded_date FROM analytics.etl_last_loaded WHERE tableName = \'' + tableName + '\';'
+            sql_query = 'SELECT lastLoadedDate FROM analytics.etl_last_loaded WHERE tableName = \'' + tableName + '\';'
             cursor.execute(sql_query)
 
             result = cursor.fetchone()
