@@ -69,10 +69,7 @@ begin
 			or (t.highPrice <> s.highPrice)
 			or (t.lowPrice <> s.lowPrice)
 			or (t.closePrice <> s.closePrice)
-			or (t.volume <> s.volume)
-			or (isnull(t.dailyReturn, '') <> isnull(s.dailyreturn, ''))
-			or (isnull(t.cumulativeReturn, '') <> isnull(s.cumulativeReturn, ''))
-			or (isnull(t.volatility20d, '') <> isnull(s.volatility20d, '')))
+			or (t.volume <> s.volume))
 		then
 			update set
 				t.openPrice = s.openPrice,
@@ -92,6 +89,6 @@ begin
 
 	end try
 	begin catch
-		print 'Error occurred in Transforming Layer Load'
+		throw;
 	end catch
 end
