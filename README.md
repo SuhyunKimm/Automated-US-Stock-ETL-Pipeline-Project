@@ -22,7 +22,7 @@ Raw (Bronze) → Clean (Silver) → Analytics (Gold)
 - Raw: Original unprocessed data
 - Clean: Type-casted, deduplicated
 - Analytics: Business ready fact/dimension tables
-<img src="resources/Pipeline.png" width="50%" alt="Pipeline structure">
+<img src="images/Pipeline.png" width="50%" alt="Pipeline structure">
 
 
 ## Features
@@ -53,4 +53,4 @@ This is a simple, single-page verification dashboard designed to confirm that th
 By building this dashboard, I was able to demonstrate that the data is truly analytics-ready, as the visuals did not require any complex DAX or Power Query transformations.
 Because the final dataset was already optimised for visualisation, the report refreshed in under one second, indicating both efficiency and good data modelling practices.
 
-![Screenshot of PowerBI Dashboard](resources/dashboard.png)
+![Screenshot of PowerBI Dashboard](images/dashboard.png)
