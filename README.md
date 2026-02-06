@@ -11,7 +11,7 @@ An automated ETL pipeline that loads, processes, and stores US stock price and m
 5. [Incremental Loading Strategy](#incremental-loading-strategy)
 6. [Database Schema](#database-schema)
 7. [Logging & Monitoring](#logging--monitoring)
-8. [Visualizsation](#visualisation)
+8. [Visualisation](#visualisation)
 9. [Known Issues](#known-issues)
 10. [Future Improvements](#future-improvements)
 
