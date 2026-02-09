@@ -15,9 +15,9 @@ with open(r"../logs/logs.txt", "a", encoding="utf-8") as f:
 
     if last_loaded_date != None and last_loaded_date != -1:
         start_date = last_loaded_date[0] + timedelta(days=1)
+        
     # Define interval for fetching data
     interval = "1d"
-    print(start_date)
     f.write('Download start\n')
     data = yf.download(tickers, start=start_date, interval=interval, progress=False)
     
