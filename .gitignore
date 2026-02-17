@@ -20,3 +20,7 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+
+#GCP credentials
+python/BigQuery/key/
+*.json
