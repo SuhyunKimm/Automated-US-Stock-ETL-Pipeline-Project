@@ -27,6 +27,10 @@ end_date = max(df['date'])
 
 end_date_fmt = datetime.strptime(end_date, '%Y-%m-%d').date()
 
+# Convert time columns safely
+df['startTime'] = pd.to_datetime(df['startTime'], format='%H:%M', errors='coerce').dt.strftime('%H:%M:%S')
+df['endTime']   = pd.to_datetime(df['endTime'], format='%H:%M', errors='coerce').dt.strftime('%H:%M:%S')
+
 # BigQuery client
 client = bigquery.Client(project='us-stock-project-487701')
 table_id = 'us-stock-project-487701.us_stock.bronze_us_market_holidays'
