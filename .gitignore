@@ -24,3 +24,9 @@ TestResults.xml
 #GCP credentials
 python/BigQuery/key/
 *.json
+
+.venv/
+target/
+dbt_packages/
+logs/
+.env
