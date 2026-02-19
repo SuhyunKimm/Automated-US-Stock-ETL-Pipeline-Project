@@ -1,7 +1,8 @@
 -- us_market_holidays (silver layer)
 
 {{ config (
-	materialized='table'
+	materialized='incremental',
+	unique_key = 'date'
 )}}
 
 select
@@ -13,3 +14,7 @@ select
 	ingestedAt as ingestedAt
 from {{ source('bronze', 'bronze_us_market_holidays') }}
 where date is not null
+
+{% if is_incremental() %}
+	and date > (select max(date) from {{this}})
+{% endif %}

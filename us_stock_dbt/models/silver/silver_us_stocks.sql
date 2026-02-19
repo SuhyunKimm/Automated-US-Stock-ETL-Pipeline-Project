@@ -1,7 +1,8 @@
 -- us_stocks (silver layer)
 
 {{ config (
-	materialized='table'
+	materialized='incremental',
+	unique_key = ['ticker', 'date']
 )}}
 
 select
@@ -18,3 +19,7 @@ where
     ticker is not null 
     and trim(ticker) != ''
     and date is not null
+
+{% if is_incremental() %}
+	and date > (select max(date) from {{this}})
+{% endif %}
